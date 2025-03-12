@@ -14,13 +14,13 @@ import _ from 'lodash';
 import { DoctorSlotsDialog } from "./doctor-slots-dialog"
 import { set } from "date-fns"
 import { start } from "node:repl"
+import { EditDoctorForm } from "./edit-doctor-form"
 
 interface DoctorListProps {
   searchQuery: string;
   selectedSpecialty: string;
   searchDate?: Date;
   searchTime?: string;
-  onEdit: (doctor: Doctor) => void;
   setSearchTime: (time: string) => void;
 }
 
@@ -31,6 +31,7 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [availableSlots, setAvailableSlots] = useState<{ date: string, time: string[] }[]>([]);
   const [slotDoctor, setSlotDoctor] = useState<any[]>([]);
+  const [openModalEditDoctor, setOpenModalEditDoctor] = useState<boolean>(false);
   // const [allAppoinment, setAllAppoinment] = useState<any[]>([]);
   // const [getAllDoctorSchedules, setGetAllDoctorSchedules] = useState<any[]>([]);
 
@@ -180,6 +181,12 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
     }
   };
 
+
+  const handleEditDoctor = async (doctor: Doctor) => {
+    setSelectedDoctor(doctor);
+    setOpenModalEditDoctor(true);
+  }
+
   return (
     <div className="rounded-md border border-custom-green-200">
       <Table>
@@ -214,7 +221,7 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
               <TableCell className="text-right space-x-2">
                 <Button
                   variant="outline"
-                  onClick={() => onEdit(doctor)}
+                  onClick={() => handleEditDoctor(doctor)}
                   className="border-custom-green-300 hover:bg-custom-green-50"
                 >
                   Edit
@@ -231,6 +238,19 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
           ))}
         </TableBody>
       </Table>
+      <Dialog open={openModalEditDoctor} onOpenChange={setOpenModalEditDoctor}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Doctor</DialogTitle>
+          </DialogHeader>
+          {selectedDoctor && (
+            <EditDoctorForm
+              loadDoctors={loadDoctors}
+              doctor={selectedDoctor}
+              onClose={() => setOpenModalEditDoctor(false)} />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

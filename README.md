@@ -20,8 +20,8 @@ Working features
 Doctor information
 - Create ❌
 - Read ✅
-- Update ❌
-- Delete ❌
+- Update ✅
+- Delete ✅
 - Search ✅
 - Filter ❌
 

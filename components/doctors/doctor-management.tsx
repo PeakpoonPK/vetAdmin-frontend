@@ -162,7 +162,6 @@ export function DoctorManagement() {
           searchDate={searchDate}
           searchTime={searchTime}
           setSearchTime={setSearchTime}
-          onEdit={() => { }}
         />
       )}
     </div>
