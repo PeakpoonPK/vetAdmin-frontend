@@ -2,7 +2,7 @@ import { axiosInstance } from '@/lib/axios';
 import { Appointment } from '@/types/api';
 
 export const appointmentService = {
-  
+
   getAllAppointments: async (params?: {
     status?: 'pending' | 'confirmed' | 'cancelled';
     startDate?: string;
@@ -16,6 +16,7 @@ export const appointmentService = {
     const response = await axiosInstance.get<Appointment>(`/api/appointments/${id}`);
     return response.data;
   },
+
 
   getAppointmentByDoctorId: async (id: string) => {
     const response = await axiosInstance.get<Appointment>(`/api/appointments/doctorId/${id}`);
@@ -33,4 +34,12 @@ export const appointmentService = {
     });
     return response.data;
   },
+
+  createAppointment: async (data: any) => {
+    const response = await axiosInstance.post<any>('api/appointments', data);
+    return response.data;
+  },
 };
+
+
+

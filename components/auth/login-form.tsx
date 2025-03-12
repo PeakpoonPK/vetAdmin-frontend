@@ -43,7 +43,7 @@ export function LoginForm() {
       const response = await authService.login(values.email, values.password)
       localStorage.setItem("token", response.token)
       toast.success('Logged in successfully')
-      router.push("/dashboard")
+      router.push("/dashboard/doctors")
     } catch (error) {
 
       toast.error('Invalid credentials. Please try again.')

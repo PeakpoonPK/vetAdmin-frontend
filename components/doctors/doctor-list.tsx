@@ -13,6 +13,7 @@ import { Calendar } from "../ui/calendar";
 import _ from 'lodash';
 import { DoctorSlotsDialog } from "./doctor-slots-dialog"
 import { set } from "date-fns"
+import { start } from "node:repl"
 
 interface DoctorListProps {
   searchQuery: string;
@@ -30,8 +31,8 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [availableSlots, setAvailableSlots] = useState<{ date: string, time: string[] }[]>([]);
   const [slotDoctor, setSlotDoctor] = useState<any[]>([]);
-  const [allAppoinment, setAllAppoinment] = useState<any[]>([]);
-  const [getAllDoctorSchedules, setGetAllDoctorSchedules] = useState<any[]>([]);
+  // const [allAppoinment, setAllAppoinment] = useState<any[]>([]);
+  // const [getAllDoctorSchedules, setGetAllDoctorSchedules] = useState<any[]>([]);
 
   useEffect(() => {
     loadDoctors();
@@ -45,6 +46,7 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
         `${doctor.firstName} ${doctor.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
         doctor.specialty.toLowerCase().includes(searchQuery.toLowerCase())
       );
+      // console.log('filteredDoctors', filteredDoctors)
       setDoctors(filteredDoctors);
     }
   }, [searchQuery])
@@ -61,22 +63,20 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
     }
   }, [selectedSpecialty]);
 
-  useEffect(() => {
-    if (searchDate && searchTime) {
-      if (searchTime === 'any') {
+  // console.log(doctors)
+  // useEffect(() => {
+  //   loadDoctors();
+  //   if (searchDate && searchTime) {
+  //     if (searchTime === 'any') {
+  //       const filteredDoctors = doctors.filter(doctor => doctor.schedules?.some(schedule =>
+  //         new Date(schedule.day).toLocaleDateString() === new Date(searchDate).toLocaleDateString()
+  //       ));
+  //       return setDoctors(filteredDoctors);
+  //     } else {
 
-      } else { }
-
-    }
-  }, [searchDate, searchTime]);
-
-
-  useEffect(() => {
-    loadAllAppoinment();
-    setSearchTime('any');
-  }, [
-    searchDate
-  ])
+  //     }
+  //   }
+  // }, [searchDate, searchTime]);
 
   const loadDoctors = async () => {
     try {
@@ -84,19 +84,6 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
       setDoctors(data);
     } catch (error) {
       toast.error("Failed to load doctors");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadAllAppoinment = async () => {
-    try {
-      const data = await appointmentService.getAllAppointments();
-      const doctorSchedule = await doctorScheduleService.getAllDoctorSchedules();
-      setAllAppoinment(data);
-      setGetAllDoctorSchedules(doctorSchedule)
-    } catch (error) {
-      toast.error("Failed to load appointments");
     } finally {
       setLoading(false);
     }
@@ -157,6 +144,42 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
     return nameMatch && specialtyMatch && availabilityMatch;
   });
 
+  const handleBookSlot = async (doctor: Doctor, date: Date, time: string, patient: Patient) => {
+    try {
+      // Parse the time string and create start date
+      const [hourStr, period] = time.split(' ');
+      const [hour] = hourStr.split(':');
+      let startHour = parseInt(hour);
+
+      // Convert to 24-hour format if PM
+      if (period === 'PM' && startHour !== 12) {
+        startHour += 12;
+      } else if (period === 'AM' && startHour === 12) {
+        startHour = 0;
+      }
+
+      // Create start and end dates
+      const startDate = new Date(date);
+      startDate.setHours(startHour, 0, 0, 0);
+
+      const endDate = new Date(startDate);
+      endDate.setHours(startDate.getHours() + 1);
+
+      await appointmentService.createAppointment({
+        doctorId: doctor.id,
+        patientId: patient.id,
+        date: startDate,
+        start: startDate,
+        end: endDate,
+        status: "Pending",
+      });
+
+      toast.success("Appointment booked successfully");
+    } catch (error) {
+      toast.error("Failed to book appointment");
+    }
+  };
+
   return (
     <div className="rounded-md border border-custom-green-200">
       <Table>
@@ -185,6 +208,7 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
                   selectedDate={selectedDate}
                   onViewSlots={handleViewAvailableSlots}
                   setSelectedDate={setSelectedDate}
+                  onBookSlot={handleBookSlot}
                 />
               </TableCell>
               <TableCell className="text-right space-x-2">

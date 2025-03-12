@@ -16,31 +16,31 @@ import { usePathname } from "next/navigation"
 import { authService } from "@/src/services/auth"
 
 const routes = [
-  {
-    label: 'Dashboard',
-    icon: LayoutDashboard,
-    href: '/dashboard',
-  },
+  // {
+  //   label: 'Dashboard',
+  //   icon: LayoutDashboard,
+  //   href: '/dashboard',
+  // },
   {
     label: 'Doctors',
     icon: UserCircle,
     href: '/dashboard/doctors',
   },
-  {
-    label: 'Doctors Schedule',
-    icon: Users,
-    href: '/dashboard/schedule',
-  },
+  // {
+  //   label: 'Doctors Schedule',
+  //   icon: Users,
+  //   href: '/dashboard/schedule',
+  // },
   {
     label: 'Appointments',
     icon: Calendar,
     href: '/dashboard/appointments',
   },
-  {
-    label: 'Settings',
-    icon: Settings,
-    href: '/dashboard/settings',
-  },
+  // {
+  //   label: 'Settings',
+  //   icon: Settings,
+  //   href: '/dashboard/settings',
+  // },
 ]
 
 export function Sidebar() {

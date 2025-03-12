@@ -11,7 +11,6 @@ export default function DoctorsPage() {
       <div className="flex flex-col gap-6">
         <div>
           <h1 className="text-3xl font-bold text-custom-green-800">Doctor Management</h1>
-          <p className="text-custom-green-600">Manage doctor information, schedules, and specialties</p>
         </div>
         <DoctorManagement />
       </div>

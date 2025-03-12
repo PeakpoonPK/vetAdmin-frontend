@@ -81,7 +81,7 @@ export function DoctorManagement() {
           </div>
 
           {/* Date Filter */}
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
             <Label>Date</Label>
             <Popover>
               <PopoverTrigger asChild>
@@ -105,9 +105,9 @@ export function DoctorManagement() {
                 />
               </PopoverContent>
             </Popover>
-          </div>
+          </div> */}
           {/* Time Filter */}
-          {searchDate && <div className="flex flex-col gap-2">
+          {/* {searchDate && <div className="flex flex-col gap-2">
             <Label>Time</Label>
             <Select
               value={searchTime}
@@ -138,7 +138,7 @@ export function DoctorManagement() {
                 ))}
               </SelectContent>
             </Select>
-          </div>}
+          </div>} */}
         </div>
 
         Action Buttons

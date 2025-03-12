@@ -14,6 +14,7 @@ interface DoctorSlotsDialogProps {
   selectedDate: Date | undefined
   onViewSlots: (doctor: Doctor) => void
   setSelectedDate: (date: Date | undefined) => void
+  onBookSlot: (doctor: Doctor, date: Date, time: string) => void
 }
 
 export function DoctorSlotsDialog({
@@ -22,7 +23,8 @@ export function DoctorSlotsDialog({
   slotDoctor,
   selectedDate,
   onViewSlots,
-  setSelectedDate
+  setSelectedDate,
+  onBookSlot
 }: DoctorSlotsDialogProps) {
   return (
     <Dialog>
@@ -87,6 +89,9 @@ export function DoctorSlotsDialog({
                                     size="sm"
                                     className="border-custom-green-300 hover:bg-custom-green-50"
                                     disabled={isUnavailable}
+                                    onClick={() =>
+
+                                      onBookSlot(doctor, selectedDate, time)}
                                   >
                                     Book
                                   </Button>
