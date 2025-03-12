@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import axios from 'axios';
+import { appointmentService } from "@/src/services/appointments"
 
 interface Appointment {
   id: string;
@@ -39,10 +40,10 @@ export default function AppointmentPage() {
 
   const fetchAppointments = async () => {
     try {
-      const response = await axios.get('/api/appointments', {
-        params: search,
-      });
-      setAppointments(response.data);
+      const response = await appointmentService.getAllAppointments()
+
+      console.log(response)
+      setAppointments(response);
     } catch (error) {
       console.error('Error fetching appointments:', error);
     }
@@ -62,6 +63,14 @@ export default function AppointmentPage() {
       ...search,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const formatDateTime = (dateTime: string) => {
+    const date = new Date(dateTime);
+    return {
+      date: date.toLocaleDateString(),
+      time: date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
   };
 
   return (
@@ -132,50 +141,53 @@ export default function AppointmentPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {appointments.map((appointment) => (
-            <TableRow key={appointment.id}>
-              <TableCell>{appointment.petName}</TableCell>
-              <TableCell>{appointment.ownerName}</TableCell>
-              <TableCell>{appointment.doctorName}</TableCell>
-              <TableCell>{appointment.room}</TableCell>
-              <TableCell>{appointment.date}</TableCell>
-              <TableCell>{appointment.time}</TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    appointment.status === 'confirmed'
-                      ? 'success'
-                      : appointment.status === 'cancelled'
-                        ? 'destructive'
-                        : 'default'
-                  }
-                >
-                  {appointment.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                {appointment.status === 'pending' && (
-                  <>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="mr-2"
-                      onClick={() => updateStatus(appointment.id, 'confirmed')}
-                    >
-                      Confirm
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => updateStatus(appointment.id, 'cancelled')}
-                    >
-                      Cancel
-                    </Button>
-                  </>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+          {appointments.map((appointment) => {
+            const { date, time } = formatDateTime(appointment.date);
+            return (
+              <TableRow key={appointment.id}>
+                <TableCell>{appointment.Patient.name}</TableCell>
+                <TableCell>{appointment.Patient.ownerName}</TableCell>
+                <TableCell>{appointment.Doctor.firstName + ' ' + appointment.Doctor.lastName}</TableCell>
+                <TableCell>{appointment.Doctor.specialty}</TableCell>
+                <TableCell>{date}</TableCell>
+                <TableCell>{time}</TableCell>
+                <TableCell>
+                  <Badge
+                    variant={
+                      appointment.status === 'confirmed'
+                        ? 'success'
+                        : appointment.status === 'cancelled'
+                          ? 'destructive'
+                          : 'default'
+                    }
+                  >
+                    {appointment.status}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  {appointment.status === 'pending' && (
+                    <>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="mr-2"
+                        onClick={() => updateStatus(appointment.id, 'confirmed')}
+                      >
+                        Confirm
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => updateStatus(appointment.id, 'cancelled')}
+                      >
+                        Cancel
+                      </Button>
+                    </>
+                  )}
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>
