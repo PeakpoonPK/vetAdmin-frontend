@@ -17,11 +17,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { Toaster, toast } from 'sonner'
 import { Icons } from "@/components/icons"
-import { authService } from "@/src/services/auth"
 
 const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 })
 
 export function LoginForm() {
@@ -37,15 +36,15 @@ export function LoginForm() {
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      setIsLoading(true)
-      console.log(values)
-      const response = await authService.login(values.email, values.password)
-      localStorage.setItem("token", response.token)
-      toast.success('Logged in successfully')
-      router.push("/dashboard/doctors")
-    } catch (error) {
+    setIsLoading(true)
 
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      toast.success('You have successfully logged in.')
+
+      router.push("/dashboard")
+    } catch (error) {
       toast.error('Invalid credentials. Please try again.')
     } finally {
       setIsLoading(false)
@@ -55,23 +54,22 @@ export function LoginForm() {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel className="text-base md:text-lg text-custom-green-800">Email</FormLabel>
+              <FormItem>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="admin@example.com"
+                    placeholder="admin@medical.com"
                     disabled={isLoading}
-                    className="h-12 text-base md:text-lg p-4 bg-custom-white border-custom-green-300 focus:border-custom-green-500 text-custom-green-900"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="text-sm md:text-base text-custom-red-500" />
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -79,28 +77,23 @@ export function LoginForm() {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel className="text-base md:text-lg text-custom-green-800">Password</FormLabel>
+              <FormItem>
+                <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="••••••••"
+                    placeholder="Enter your password"
                     disabled={isLoading}
-                    className="h-12 text-base md:text-lg p-4 bg-custom-white border-custom-green-300 focus:border-custom-green-500 text-custom-green-900"
                     {...field}
                   />
                 </FormControl>
-                <FormMessage className="text-sm md:text-base text-custom-red-500" />
+                <FormMessage />
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            className="w-full h-12 text-base md:text-lg bg-custom-green-500 hover:bg-custom-green-600 text-custom-white"
-            disabled={isLoading}
-          >
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading && (
-              <Icons.spinner className="mr-2 h-5 w-5 animate-spin" />
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
             Sign In
           </Button>
