@@ -41,8 +41,6 @@ export default function AppointmentPage() {
   const fetchAppointments = async () => {
     try {
       const response = await appointmentService.getAllAppointments()
-
-      console.log(response)
       setAppointments(response);
     } catch (error) {
       console.error('Error fetching appointments:', error);
@@ -63,6 +61,10 @@ export default function AppointmentPage() {
       ...search,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleStatusChange = (id: string, e: React.ChangeEvent<HTMLSelectElement>) => {
+    updateStatus(id, e.target.value);
   };
 
   const formatDateTime = (dateTime: string) => {
@@ -127,31 +129,31 @@ export default function AppointmentPage() {
           />
         </div>
       </div>
-      <Table>
-        <TableHeader>
+      <Table className="bg-white shadow-md rounded-lg overflow-hidden">
+        <TableHeader className="bg-gray-100">
           <TableRow>
-            <TableHead>Pet Name</TableHead>
-            <TableHead>Owner</TableHead>
-            <TableHead>Doctor</TableHead>
-            <TableHead>Room</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Time</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="text-left p-4">Pet Name</TableHead>
+            <TableHead className="text-left p-4">Owner</TableHead>
+            <TableHead className="text-left p-4">Doctor</TableHead>
+            <TableHead className="text-left p-4">Room</TableHead>
+            <TableHead className="text-left p-4">Date</TableHead>
+            <TableHead className="text-left p-4">Time</TableHead>
+            <TableHead className="text-left p-4">Status</TableHead>
+            <TableHead className="text-left p-4">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {appointments.map((appointment) => {
+          {appointments.map((appointment, index) => {
             const { date, time } = formatDateTime(appointment.date);
             return (
-              <TableRow key={appointment.id}>
-                <TableCell>{appointment.Patient.name}</TableCell>
-                <TableCell>{appointment.Patient.ownerName}</TableCell>
-                <TableCell>{appointment.Doctor.firstName + ' ' + appointment.Doctor.lastName}</TableCell>
-                <TableCell>{appointment.Doctor.specialty}</TableCell>
-                <TableCell>{date}</TableCell>
-                <TableCell>{time}</TableCell>
-                <TableCell>
+              <TableRow key={appointment.id} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                <TableCell className="p-4">{appointment.Patient.name}</TableCell>
+                <TableCell className="p-4">{appointment.Patient.ownerName}</TableCell>
+                <TableCell className="p-4">{appointment.Doctor.firstName + ' ' + appointment.Doctor.lastName}</TableCell>
+                <TableCell className="p-4">{appointment.Doctor.specialty}</TableCell>
+                <TableCell className="p-4">{date}</TableCell>
+                <TableCell className="p-4">{time}</TableCell>
+                <TableCell className="p-4">
                   <Badge
                     variant={
                       appointment.status === 'confirmed'
@@ -160,30 +162,33 @@ export default function AppointmentPage() {
                           ? 'destructive'
                           : 'default'
                     }
+                    className={
+                      appointment.status === 'confirmed'
+                        ? 'bg-green-100 text-green-800'
+                        : appointment.status === 'cancelled'
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                    }
                   >
                     {appointment.status}
                   </Badge>
                 </TableCell>
-                <TableCell>
-                  {appointment.status === 'pending' && (
-                    <>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        className="mr-2"
-                        onClick={() => updateStatus(appointment.id, 'confirmed')}
-                      >
-                        Confirm
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => updateStatus(appointment.id, 'cancelled')}
-                      >
-                        Cancel
-                      </Button>
-                    </>
-                  )}
+                <TableCell className="p-4">
+                  <select
+                    value={appointment.status}
+                    onChange={(e) => handleStatusChange(appointment.id, e)}
+                    className={
+                      appointment.status === 'confirmed'
+                        ? 'border rounded p-1 bg-green-100 text-green-800'
+                        : appointment.status === 'cancelled'
+                          ? 'border rounded p-1 bg-red-100 text-red-800'
+                          : 'border rounded p-1 bg-yellow-100 text-yellow-800'
+                    }
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
                 </TableCell>
               </TableRow>
             );
