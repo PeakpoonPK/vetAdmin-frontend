@@ -139,22 +139,26 @@ export function DoctorManagement() {
               </SelectContent>
             </Select>
           </div>} */}
+
         </div>
 
-        Action Buttons
-        {/* <div className="flex justify-end">
-          <Button
+        {/* Action Buttons */}
+        <div className="flex justify-start">
+          {!isCreating && <Button
             onClick={() => setIsCreating(true)}
             className="bg-custom-green-500 text-white hover:bg-custom-green-600"
           >
             Add Doctor
-          </Button>
-        </div> */}
+          </Button>}
+        </div>
       </div>
 
       {/* Content */}
       {isCreating ? (
-        <DoctorForm onClose={() => setIsCreating(false)} />
+        <DoctorForm
+          onClose={() => setIsCreating(false)}
+          onSuccess={() => setIsCreating(false)} // Add onSuccess handler
+        />
       ) : (
         <DoctorList
           searchQuery={searchQuery}

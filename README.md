@@ -18,7 +18,7 @@ Password: admin1234
 Working features
 1. Doctor management
 Doctor information
-- Create ❌
+- Create ✅
 - Read ✅
 - Update ✅
 - Delete ✅
