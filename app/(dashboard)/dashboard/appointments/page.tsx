@@ -75,6 +75,10 @@ export default function AppointmentPage() {
     };
   };
 
+  const handleEdit = (id: string) => {
+    console.log(`Edit appointment with id: ${id}`);
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Appointment Management</h1>
@@ -169,6 +173,15 @@ export default function AppointmentPage() {
                     <option value="Confirmed">Confirmed</option>
                     <option value="Cancelled">Cancelled</option>
                   </select>
+                </TableCell>
+                <TableCell className="p-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleEdit(appointment.id)}
+                    className="border-custom-green-300"
+                  >
+                    Edit
+                  </Button>
                 </TableCell>
               </TableRow>
             );
