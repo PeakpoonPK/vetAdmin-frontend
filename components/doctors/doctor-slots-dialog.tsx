@@ -6,6 +6,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Doctor } from "@/types/api"
 import _ from 'lodash'
+import { MAX_VALUE_REG } from "recharts/types/util/ChartUtils"
 
 interface DoctorSlotsDialogProps {
   doctor: Doctor
@@ -26,6 +27,7 @@ export function DoctorSlotsDialog({
   setSelectedDate,
   onBookSlot
 }: DoctorSlotsDialogProps) {
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -90,7 +92,6 @@ export function DoctorSlotsDialog({
                                     className="border-custom-green-300 hover:bg-custom-green-50"
                                     disabled={isUnavailable}
                                     onClick={() =>
-
                                       onBookSlot(doctor, selectedDate, time)}
                                   >
                                     Book

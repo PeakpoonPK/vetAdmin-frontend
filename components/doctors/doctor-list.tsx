@@ -92,7 +92,7 @@ export function DoctorList({ searchQuery, selectedSpecialty, searchDate, searchT
 
   const handleViewAvailableSlots = async (doctor: Doctor) => {
     setSelectedDoctor(doctor);
-    const data = await appointmentService.getAppointmentByDoctorId(doctor.id);
+    const data = await appointmentService.getAppointmentByDoctorId(doctor.id).filter((appointment) => appointment.status !== "Cancelled");
     const doctorSchedules = await doctorScheduleService.getDoctorScheduleByDoctorId(doctor.id);
 
     const slots = doctorSchedules.map(schedule => {

@@ -25,7 +25,7 @@ export const appointmentService = {
 
   updateAppointmentStatus: async (
     id: string,
-    status: 'confirmed' | 'cancelled',
+    status: 'Confirmed' | 'Cancelled' | 'Deleted',
     notes?: string
   ) => {
     const response = await axiosInstance.patch<Appointment>(`/api/appointments/${id}/status`, {

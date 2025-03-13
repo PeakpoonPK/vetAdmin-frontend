@@ -47,9 +47,9 @@ export default function AppointmentPage() {
     }
   };
 
-  const updateStatus = async (id: string, status: string) => {
+  const updateStatus = async (id: string, status: "Confirmed" | "Cancelled" | "Deleted", notes?: string) => {
     try {
-      await axios.patch(`/api/appointments/${id}`, { status });
+      const response = await appointmentService.updateAppointmentStatus(id, status, notes)
       fetchAppointments();
     } catch (error) {
       console.error('Error updating appointment:', error);
@@ -64,7 +64,7 @@ export default function AppointmentPage() {
   };
 
   const handleStatusChange = (id: string, e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateStatus(id, e.target.value);
+    updateStatus(id, e.target.value as "Confirmed" | "Cancelled" | "Deleted");
   };
 
   const formatDateTime = (dateTime: string) => {
@@ -154,40 +154,20 @@ export default function AppointmentPage() {
                 <TableCell className="p-4">{date}</TableCell>
                 <TableCell className="p-4">{time}</TableCell>
                 <TableCell className="p-4">
-                  <Badge
-                    variant={
-                      appointment.status === 'confirmed'
-                        ? 'success'
-                        : appointment.status === 'cancelled'
-                          ? 'destructive'
-                          : 'default'
-                    }
-                    className={
-                      appointment.status === 'confirmed'
-                        ? 'bg-green-100 text-green-800'
-                        : appointment.status === 'cancelled'
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                    }
-                  >
-                    {appointment.status}
-                  </Badge>
-                </TableCell>
-                <TableCell className="p-4">
                   <select
                     value={appointment.status}
                     onChange={(e) => handleStatusChange(appointment.id, e)}
                     className={
-                      appointment.status === 'confirmed'
+                      appointment.status === 'Confirmed'
                         ? 'border rounded p-1 bg-green-100 text-green-800'
-                        : appointment.status === 'cancelled'
+                        : appointment.status === 'Cancelled'
                           ? 'border rounded p-1 bg-red-100 text-red-800'
                           : 'border rounded p-1 bg-yellow-100 text-yellow-800'
                     }
                   >
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="cancelled">Cancelled</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Cancelled">Cancelled</option>
                   </select>
                 </TableCell>
               </TableRow>
